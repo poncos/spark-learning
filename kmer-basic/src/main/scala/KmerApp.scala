@@ -14,7 +14,7 @@ object KmerApp {
     val reads: RDD[(LongWritable, Text)] = sc.newAPIHadoopFile(rawData, classOf[SkipLinesInputFormat],
       classOf[LongWritable], classOf[Text])
 
-    val kmers: RDD[String] = reads.map(KmerFunctions.kmerExtract)
+    val kmers: RDD[String] = reads.flatMap(KmerFunctions.kmerExtract)
     val kmersWithCounter: RDD[(String, Long)] = kmers.map( kmer => (kmer, 1L))
     val kmersFrequency: RDD[(String, Long)] = kmersWithCounter.reduceByKey( (c1, c2) => c1 + c2)
 
