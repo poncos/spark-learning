@@ -3,7 +3,6 @@ import org.apache.hadoop.fs.FSDataInputStream
 import org.apache.hadoop.io.{LongWritable, Text}
 import org.apache.hadoop.mapreduce.lib.input.{FileSplit, SplitLineReader, UncompressedSplitLineReader}
 import org.apache.hadoop.mapreduce.{InputSplit, RecordReader, TaskAttemptContext}
-import org.apache.spark.internal.Logging
 
 class SkipLinesRecordReader(fileSplit: FileSplit, context: TaskAttemptContext)
   extends RecordReader[LongWritable, Text] {
@@ -17,9 +16,7 @@ class SkipLinesRecordReader(fileSplit: FileSplit, context: TaskAttemptContext)
 
   var jobConf : Configuration             = context.getConfiguration
   var linesPerRecord                      = this.jobConf.getInt(LINES_PER_RECORD, 1)
-  //val filter                              = this.jobConf.getInts(SKIP_LINES_FILTER)
-//  var linesFilter : Array[Int]            = if (filter == null) DEFAULT_LINES_FILTER
-//                                            else filter
+
   val linesFilter : Array[Int]            = DEFAULT_LINES_FILTER
   var maxLineLength                       = this.jobConf.getInt(LINE_MAX_LENTH, DEFAULT_MAX_LINE_LENGTH)
 

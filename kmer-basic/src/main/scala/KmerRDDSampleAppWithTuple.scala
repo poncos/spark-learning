@@ -1,9 +1,8 @@
 import org.apache.hadoop.io.{LongWritable, Text}
-import org.apache.spark.SparkContext
-import org.apache.spark.SparkConf
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 
-object KmerApp {
+object KmerRDDSampleAppWithTuple {
 
   def main(args: Array[String]) {
 
@@ -18,7 +17,7 @@ object KmerApp {
     val kmersWithCounter: RDD[(String, Long)] = kmers.map( kmer => (kmer, 1L))
     val kmersFrequency: RDD[(String, Long)] = kmersWithCounter.reduceByKey( (c1, c2) => c1 + c2)
 
-    kmersFrequency.saveAsTextFile("/user/poncos/kmers/output")
+    kmersFrequency.saveAsTextFile("/user/poncos/kmers/output/")
 
     sc.stop()
   }
