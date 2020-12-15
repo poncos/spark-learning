@@ -7,8 +7,8 @@ object KmerRDDSampleApp {
 
   def main(args: Array[String]) {
 
-    val rawData   = "/user/poncos/kmers/input/ERR188245_1_piece.fastq"
-    val conf      = new SparkConf().setAppName("Simple Kmer Application")
+    val rawData   = "hdfs://positron:9000/users/ecollado/kmers/inputs/ERR188245_1_piece.fastq"
+    val conf      = new SparkConf().setAppName("Simple Kmer Application").setMaster("local")
     val sc        = new SparkContext(conf)
 
     val reads: RDD[(LongWritable, Text)] = sc.newAPIHadoopFile(rawData, classOf[SkipLinesInputFormat],
@@ -17,7 +17,7 @@ object KmerRDDSampleApp {
     val kmers: RDD[(String, Long)] = reads.flatMap(KmerFunctions.fastqReadToKmerTuple)
     val kmersFrequency: RDD[(String, Long)] = kmers.reduceByKey( (c1, c2) => c1 + c2)
 
-    kmersFrequency.saveAsTextFile("/user/poncos/kmers/output/")
+    kmersFrequency.saveAsTextFile("hdfs://positron:9000/user/poncos/kmers/output2")
 
     sc.stop()
   }
