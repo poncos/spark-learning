@@ -7,9 +7,9 @@ import org.apache.hadoop.mapreduce.{InputSplit, RecordReader, TaskAttemptContext
 class SkipLinesRecordReader(fileSplit: FileSplit, context: TaskAttemptContext)
   extends RecordReader[LongWritable, Text] {
 
-  val SKIP_LINES_FILTER                   = "mapreduce.input.skiplineinputformat.linesfilter"
-  val LINES_PER_RECORD                    = "mapreduce.input.skiplineinputformat.linesperrecord"
-  val LINE_MAX_LENTH                      = "mapreduce.input.linerecordreader.line.maxlength"
+  val SKIP_LINES_FILTER                   = "spark.input.skiplineinputformat.linesfilter"
+  val LINES_PER_RECORD                    = "spark.input.skiplineinputformat.linesperrecord"
+  val LINE_MAX_LENTH                      = "spark.input.linerecordreader.line.maxlength"
 
   val DEFAULT_MAX_LINE_LENGTH             = 1024
   val DEFAULT_LINES_FILTER : Array[Int]   = Array(0,0,1,0)
@@ -48,6 +48,7 @@ class SkipLinesRecordReader(fileSplit: FileSplit, context: TaskAttemptContext)
   }
 
   override def nextKeyValue(): Boolean = {
+    println(s"nextKeyValue ...")
     if (this.currentKey == null) this.currentKey = new LongWritable
 
     if (this.currentValue == null) this.currentValue = new Text
@@ -79,13 +80,18 @@ class SkipLinesRecordReader(fileSplit: FileSplit, context: TaskAttemptContext)
     false
   }
 
-  override def getCurrentKey: LongWritable = this.currentKey;
+  override def getCurrentKey: LongWritable = {
+    println(s"getCurrentKey ${this.currentKey}")
+    this.currentKey;
+  }
 
   override def getCurrentValue: Text = this.currentValue
 
-  override def getProgress: Float =
+  override def getProgress: Float = {
+    println("getProgress")
     if (this.start == this.end) 0.0f
     else Math.min(1.0f, (this.pos - this.start) / (this.end - this.start).toFloat)
+  }
 
   override def close(): Unit = {
     try if (in != null) in.close()

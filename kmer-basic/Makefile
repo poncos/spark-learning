@@ -1,10 +1,16 @@
 
+#  export HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
+#  export SPARK_HOME=/home/opt/spark-3.0.1-bin-hadoop2.7
 submit:
-	/home/opt/spark-2.4.7-bin-without-hadoop/bin/spark-submit \
-	--class KmerApp --master yarn --deploy-mode cluster \
-	--driver-memory 4g  --executor-memory 2g --executor-cores 1  \
+	${SPARK_HOME}/bin/spark-submit \
+	--class KmerRDDSampleAppWithTuple \
+	--master yarn \
+	--deploy-mode cluster \
+	--driver-memory 4g \
+	--executor-memory 2g \
+	--executor-cores 1  \
 	--queue default \
-	--conf "mapreduce.input.skiplineinputformat.linesperrecord=4" \
-	--conf "mapreduce.input.skiplineinputformat.linesfilter=0,0,1,0" \
-	--conf "mapreduce.input.lineinputformat.linespermap=10000" \
+	--conf spark.input.skiplineinputformat.linesperrecord=4 \
+	--conf spark.input.skiplineinputformat.linesfilter=0,0,1,0 \
+	--conf spark.mapreduce.input.lineinputformat.linespermap=10000 \
 	./target/scala-2.11/kmer-basic_2.11-1.0.jar

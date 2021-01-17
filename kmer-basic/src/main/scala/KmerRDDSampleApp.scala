@@ -14,8 +14,9 @@ object KmerRDDSampleApp {
     val reads: RDD[(LongWritable, Text)] = sc.newAPIHadoopFile(rawData, classOf[SkipLinesInputFormat],
       classOf[LongWritable], classOf[Text])
 
-    val kmers: RDD[(String, Long)] = reads.flatMap(KmerFunctions.fastqReadToKmerTuple)
-    val kmersFrequency: RDD[(String, Long)] = kmers.reduceByKey( (c1, c2) => c1 + c2)
+    val kmers: RDD[String] = reads.flatMap(KmerFunctions.kmerExtract)
+    val kmersWithCounter: RDD[(String, Long)] = kmers.map( kmer => (kmer, 1L))
+    val kmersFrequency: RDD[(String, Long)] = kmersWithCounter.reduceByKey( (c1, c2) => c1 + c2)
 
     kmersFrequency.saveAsTextFile("hdfs://positron:9000/user/poncos/kmers/output2")
 

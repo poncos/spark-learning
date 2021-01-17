@@ -9,6 +9,7 @@ object KmerFunctions {
 
   def fastqReadToKmerTuple(read: (LongWritable, Text)): Seq[(String, Long)] = {
     val kmers = splitString(read._2.toString, 32, 0)
+    printf(f"Kmers ${kmers.length}")
     kmers.map( kmer => (kmer, 1L))
   }
 
